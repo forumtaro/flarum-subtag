@@ -24,7 +24,7 @@ return [
             ? $event->data['relationships']['tags']['data'] 
             : [];
         
-        $deckTagId = 1;
+        $deckTagId = 3;
         
         foreach ($tags as $tag) {
             $tagId = isset($tag['id']) ? (int)$tag['id'] : 0;
