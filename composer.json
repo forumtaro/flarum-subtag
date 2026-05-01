@@ -1,0 +1,30 @@
+{
+    "name": "olleksi/flarum-subtags",
+    "description": "Auto-creates tags from discussion titles and adds custom navigation links",
+    "type": "flarum-extension",
+    "license": "MIT",
+    "require": {
+        "flarum/core": "^1.0"
+    },
+    "authors": [
+        {
+            "name": "Olleksi",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Olleksi\\Homepage\\": "src/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "Subtags & Navigation",
+            "icon": {
+                "name": "fas fa-tags",
+                "backgroundColor": "#8a2be2",
+                "color": "#fff"
+            }
+        }
+    }
+}
