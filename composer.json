@@ -1,7 +1,7 @@
 
 {
     "name": "forumtaro/flarum-subtags",
-    "description": "Кастомні BB-коди, приховування кнопок редактора та галерея Таро",
+    "description": "Нпавігація та створення субтегів для колод Таро",
     "type": "flarum-extension",
     "require": {
          "flarum/core": "^1.0 || ^2.0"
@@ -13,9 +13,9 @@
     },
     "extra": {
         "flarum-extension": {
-            "title": "subtaf",
+            "title": "Subtags & Navigation",
             "icon": {
-                "name": "fas fa-code",
+                "name": "fas fa-tags",
                 "backgroundColor": "#4a6fa5",
                 "color": "#fff"
             }
