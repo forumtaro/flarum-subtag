@@ -1,6 +1,8 @@
 <?php
 
-namespace Olleksi\Homepage;
+namespace Forumtaro\Homepage;
+
+
 
 use Flarum\Extend;
 use Flarum\Discussion\Event\Saving;
