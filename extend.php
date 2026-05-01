@@ -154,7 +154,7 @@ return [
 (function() {
     // Додаємо стилі
     var style = document.createElement('style');
-    style.textContent = '.custom-nav-links{display:flex;gap:1px;margin:8px 0;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;justify-content:center}.custom-nav-links::-webkit-scrollbar{display:none}.custom-nav-link{display:inline-flex;align-items:center;padding:6px 4px;background:var(--primary-color);color:var(--button-color);text-decoration:none;border-radius:12px;font-size:11px;font-weight:700;transition:all 0.2s;cursor:pointer;white-space:nowrap;flex-shrink:0}.custom-nav-link svg{flex-shrink:0;width:16px;height:16px}.custom-nav-link:hover{background:var(--primary-color);color:#fff}.custom-nav-link:hover svg{color:#fff}.custom-nav-link.active{background:var(--primary-color);color:#fff}.custom-nav-link.active svg{color:#fff}@media(min-width:480px){.custom-nav-link{padding:5px 10px;font-size:12px}.custom-nav-link svg{width:18px;height:18px}}@media(min-width:768px){.custom-nav-link{padding:6px 12px;font-size:13px}.custom-nav-link svg{width:20px;height:20px}}';
+    style.textContent = '.custom-nav-links{display:flex;gap:1px;margin:8px 0;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;justify-content:center}.custom-nav-links::-webkit-scrollbar{display:none}.custom-nav-link{display:inline-flex;align-items:center;padding:6px 4px;background:var(--primary-color);color:var(--button-color);text-decoration:none;border-radius:12px;font-size:12px !important;font-weight:700;transition:all 0.2s;cursor:pointer;white-space:nowrap;flex-shrink:0}.custom-nav-link svg{flex-shrink:0;width:16px;height:16px}.custom-nav-link:hover{background:var(--primary-color);color:#fff}.custom-nav-link:hover svg{color:#fff}.custom-nav-link.active{background:var(--primary-color);color:#fff}.custom-nav-link.active svg{color:#fff}@media(min-width:480px){.custom-nav-link{padding:5px 10px;font-size:12px}.custom-nav-link svg{width:18px;height:18px}}@media(min-width:768px){.custom-nav-link{padding:6px 12px;font-size:13px}.custom-nav-link svg{width:20px;height:20px}}';
     document.head.appendChild(style);
 
     function addNav() {
@@ -255,10 +255,10 @@ JS;
     
         ->content(function (Document $document) {
             $settings = resolve(SettingsRepositoryInterface::class);
-            $hideSidebarSubtags = $settings->get('olleksi-subtags.hide_sidebar', false) ? 'true' : 'false';
-            $mobileDrawerTags = $settings->get('olleksi-subtags.mobile_drawer_tags', true) ? 'true' : 'false';
+            $hideSidebarSubtags = $settings->get('forumtaro-subtags.hide_sidebar', false) ? 'true' : 'false';
+            $mobileDrawerTags = $settings->get('forumtaro-subtags.mobile_drawer_tags', true) ? 'true' : 'false';
             
-            $customLinksRaw = $settings->get('olleksi-subtags.custom_links', '[]');
+            $customLinksRaw = $settings->get('forumtaro-subtags.custom_links', '[]');
             $customLinks = json_decode($customLinksRaw, true);
             if (!is_array($customLinks)) {
                 $customLinks = [];
@@ -1009,18 +1009,18 @@ window.addEventListener("load", function() {
     setTimeout(function() {
         if (window.app && window.app.extensionData) {
             try {
-                const extension = app.extensionData.for("olleksi-subtags");
+                const extension = app.extensionData.for("forumtaro-subtags");
                 
                 // Прості налаштування
                 extension
                     .registerSetting({
-                        setting: "olleksi-subtags.hide_sidebar",
+                        setting: "forumtaro-subtags.hide_sidebar",
                         type: "boolean",
                         label: "Ховати дочірні теги в сайдбарі",
                         help: "Приховає дочірні теги на головній сторінці"
                     })
                     .registerSetting({
-                        setting: "olleksi-subtags.mobile_drawer_tags",
+                        setting: "forumtaro-subtags.mobile_drawer_tags",
                         type: "boolean",
                         label: "Показувати теги в мобільному меню",
                         help: "Відображає список категорій в мобільному меню"
@@ -1037,7 +1037,7 @@ window.addEventListener("load", function() {
                             m("button", {
                                 className: "Button Button--primary",
                                 onclick: function() {
-                                    const currentLinks = JSON.parse(app.data.settings["olleksi-subtags.custom_links"] || "[]");
+                                    const currentLinks = JSON.parse(app.data.settings["forumtaro-subtags.custom_links"] || "[]");
                                     const newLink = {
                                         id: Date.now(),
                                         title: "",
@@ -1105,7 +1105,7 @@ window.addEventListener("load", function() {
                     saveTimer = setTimeout(function() {
                         const cleanLinks = links.map(sanitizeLink);
                         const data = {
-                            "olleksi-subtags.custom_links": JSON.stringify(cleanLinks)
+                            "forumtaro-subtags.custom_links": JSON.stringify(cleanLinks)
                         };
                         
                         // CSRF захист
@@ -1305,7 +1305,7 @@ window.addEventListener("load", function() {
                 }
                 
                 // Завантаження збережених посилань
-                const savedLinks = JSON.parse(app.data.settings["olleksi-subtags.custom_links"] || "[]");
+                const savedLinks = JSON.parse(app.data.settings["forumtaro-subtags.custom_links"] || "[]");
                 
                 // Чекаємо поки DOM готовий
                 setTimeout(function() {
@@ -1367,7 +1367,7 @@ SCRIPT;
     (new Extend\Locales(__DIR__.'/locale')),
     
     (new Extend\Settings())
-        ->default('olleksi-subtags.hide_sidebar', false)
-        ->default('olleksi-subtags.mobile_drawer_tags', true)
-        ->default('olleksi-subtags.custom_links', '[]')
+        ->default('forumtaro-subtags.hide_sidebar', false)
+        ->default('forumtaro-subtags.mobile_drawer_tags', true)
+        ->default('forumtaro-subtags.custom_links', '[]')
 ];
