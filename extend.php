@@ -151,6 +151,7 @@ return [
             $document->foot[] = <<<'JS'
 <script>
 // ==================== NAVIGATION LINKS ====================
+// ==================== NAVIGATION LINKS ====================
 (function() {
     // Додаємо стилі
     var style = document.createElement('style');
@@ -161,6 +162,7 @@ return [
         var cp = window.location.pathname;
         var paths = ['/t/tlumachennya-kart', '/t/velyki-arkany', '/t/zhezly', '/t/kubky', '/t/mechi', '/t/pentakli'];
         
+        // ЯК У ПЕРШОМУ КОДІ: перевіряємо наявність перед додаванням
         if (paths.indexOf(cp) !== -1) {
             var h = document.querySelector('.Hero-title');
             if (h && !document.querySelector('.custom-nav-links')) {
@@ -181,11 +183,14 @@ return [
                     a.href = link.href;
                     a.className = 'custom-nav-link';
                     if (cp === link.href) a.classList.add('active');
-                    a.addEventListener('click', function(e) {
+                    a.onclick = function(e) {
                         e.preventDefault();
-                        if (typeof m !== 'undefined' && m.route) m.route.set(link.href);
-                        else window.location.href = link.href;
-                    });
+                        if (typeof m !== 'undefined' && m.route && typeof m.route.set === 'function') {
+                            m.route.set(link.href);
+                        } else {
+                            window.location.href = link.href;
+                        }
+                    };
                     c.appendChild(a);
                 });
                 
@@ -193,6 +198,7 @@ return [
             }
         }
         
+        // ЯК У ПЕРШОМУ КОДІ: для сторінки дискусії
         if (cp.indexOf('/d/100') !== -1) {
             var dh = document.querySelector('.DiscussionHero-title');
             if (dh && !document.querySelector('.custom-nav-links')) {
@@ -212,11 +218,14 @@ return [
                     a.innerHTML = link.icon + '<span>' + link.text + '</span>';
                     a.href = link.href;
                     a.className = 'custom-nav-link';
-                    a.addEventListener('click', function(e) {
+                    a.onclick = function(e) {
                         e.preventDefault();
-                        if (typeof m !== 'undefined' && m.route) m.route.set(link.href);
-                        else window.location.href = link.href;
-                    });
+                        if (typeof m !== 'undefined' && m.route && typeof m.route.set === 'function') {
+                            m.route.set(link.href);
+                        } else {
+                            window.location.href = link.href;
+                        }
+                    };
                     c.appendChild(a);
                 });
                 
@@ -225,19 +234,32 @@ return [
         }
     }
     
-    setInterval(addNav, 1000);
+    // ЯК У ПЕРШОМУ КОДІ: викликаємо одразу
     addNav();
     
-    if (typeof m !== 'undefined' && m.route) {
-        var orig = m.route.set;
-        m.route.set = function() {
-            var old = document.querySelector('.custom-nav-links');
-            if (old) old.remove();
-            var r = orig.apply(this, arguments);
-            setTimeout(addNav, 500);
-            return r;
-        };
-    }
+    // ЯК У ПЕРШОМУ КОДІ: MutationObserver для відстеження змін
+    var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+                addNav();
+            }
+        });
+    });
+    
+    observer.observe(document.body, { childList: true, subtree: true });
+    
+    // ЯК У ПЕРШОМУ КОДІ: обробник для внутрішніх посилань
+    document.body.addEventListener('click', function(event) {
+        if (event.target.classList.contains('internal-link')) {
+            event.preventDefault();
+            const href = event.target.getAttribute('href');
+            if (typeof m !== 'undefined' && m.route && typeof m.route.set === 'function') {
+                m.route.set(href);
+            } else {
+                window.location.href = href;
+            }
+        }
+    });
 })();
 </script>
 JS;
@@ -592,15 +614,33 @@ JS;
     function startOptimizedObserver() {
         if (observer) observer.disconnect();
         
-        var sidebar = document.querySelector(".IndexPage-nav");
-        var results = document.querySelector(".IndexPage-results");
-        
-        observer = new MutationObserver(function() {
-            scheduleCheck(200);
+        observer = new MutationObserver(function(mutations) {
+            var hasRelevantChanges = mutations.some(function(mutation) {
+                return Array.from(mutation.addedNodes).some(function(node) {
+                    return node.nodeType === 1 && (
+                        node.classList && (
+                            node.classList.contains("TagLinkButton") ||
+                            node.classList.contains("IndexPage-nav") ||
+                            node.classList.contains("IndexPage-results")
+                        ) ||
+                        node.querySelector && (
+                            node.querySelector(".TagLinkButton") ||
+                            node.querySelector(".IndexPage-nav") ||
+                            node.querySelector(".IndexPage-results")
+                        )
+                    );
+                });
+            });
+            
+            if (hasRelevantChanges) {
+                scheduleCheck(200);
+            }
         });
         
-        if (sidebar) observer.observe(sidebar, { childList: true, subtree: false });
-        if (results) observer.observe(results, { childList: true, subtree: false });
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
     }
     
     function scheduleCheck(delay) {
@@ -611,31 +651,26 @@ JS;
     function processSubtags() {
         if (isProcessing) return;
         
-        var currentUrl = window.location.pathname;
-        if (currentUrl === lastProcessedUrl) return;
-        
         var childTags = getChildTagsData();
         
         if (childTags.length === 0) {
             removeSubtags();
-            lastProcessedUrl = currentUrl;
             return;
         }
         
+        var currentUrl = window.location.pathname;
         var isOnChildTag = childTags.some(function(tag) {
-            return currentUrl.indexOf(tag.href) !== -1;
+            return currentUrl.includes(tag.href);
         });
         
         if (isOnChildTag) {
             removeSubtags();
-            lastProcessedUrl = currentUrl;
             return;
         }
         
         isProcessing = true;
         try {
             renderSubtags(childTags);
-            lastProcessedUrl = currentUrl;
         } finally {
             isProcessing = false;
         }
@@ -701,7 +736,7 @@ JS;
                 m("div.subtags-container", [
                     m("div.subtags-wrapper", [
                         m("span.subtags-title", "📂"),
-                        buttonsArray
+                        ...buttonsArray
                     ])
                 ])
             );
