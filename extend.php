@@ -158,11 +158,19 @@ return [
     style.textContent = '.custom-nav-links{display:flex;gap:1px;margin:8px 0;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;justify-content:center}.custom-nav-links::-webkit-scrollbar{display:none}.custom-nav-link{display:inline-flex;align-items:center;padding:6px 4px;background:var(--primary-color);color:var(--button-color);text-decoration:none;border-radius:12px;font-size:12px !important;font-weight:700;transition:all 0.2s;cursor:pointer;white-space:nowrap;flex-shrink:0}.custom-nav-link svg{flex-shrink:0;width:16px;height:16px}.custom-nav-link:hover{background:var(--primary-color);color:#fff}.custom-nav-link:hover svg{color:#fff}.custom-nav-link.active{background:var(--primary-color);color:#fff}.custom-nav-link.active svg{color:#fff}@media(min-width:480px){.custom-nav-link{padding:5px 10px;font-size:12px}.custom-nav-link svg{width:18px;height:18px}}@media(min-width:768px){.custom-nav-link{padding:6px 12px;font-size:13px}.custom-nav-link svg{width:20px;height:20px}}';
     document.head.appendChild(style);
 
+    // Іконки — ТОЧНО ТАКІ Ж, як у HTML (з symbol/sprites)
+    var icons = {
+        'arcana': '<svg viewBox="0 0 24 24" fill="none"><polygon points="12,2 22,20 2,20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="3" fill="currentColor" opacity="0.3"/></svg>',
+        'wand': '<svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="3" x2="12" y2="21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M12 7 Q16 9 14 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12 11 Q8 13 10 17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="4" r="2.5" fill="currentColor"/></svg>',
+        'cup': '<svg viewBox="0 0 24 24" fill="none"><path d="M7 9 C7 5 17 5 17 9 C17 13 14 15 12 15 C10 15 7 13 7 9 Z" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="15" x2="12" y2="19" stroke="currentColor" stroke-width="2"/><line x1="9" y1="19" x2="15" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+        'sword': '<svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="2" x2="12" y2="16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="7" y1="14" x2="17" y2="14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="12" y1="16" x2="12" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polygon points="10,2 12,0 14,2" fill="currentColor"/></svg>',
+        'pentacle': '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><polygon points="12,4 14,9 19,9 15,13 16.5,18 12,15 7.5,18 9,13 5,9 10,9" fill="none" stroke="currentColor" stroke-width="1"/></svg>'
+    };
+
     function addNav() {
         var cp = window.location.pathname;
         var paths = ['/t/tlumachennya-kart', '/t/velyki-arkany', '/t/zhezly', '/t/kubky', '/t/mechi', '/t/pentakli'];
         
-        // ЯК У ПЕРШОМУ КОДІ: перевіряємо наявність перед додаванням
         if (paths.indexOf(cp) !== -1) {
             var h = document.querySelector('.Hero-title');
             if (h && !document.querySelector('.custom-nav-links')) {
@@ -170,11 +178,11 @@ return [
                 c.className = 'custom-nav-links';
                 
                 var links = [
-                    { text: 'Аркани', href: '/t/velyki-arkany', icon: '<svg viewBox="0 0 24 24" fill="none"><polygon points="12,3 22,21 2,21" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>' },
-                    { text: 'Жезли', href: '/t/zhezly', icon: '<svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="3" x2="12" y2="21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="12" cy="4" r="2.5" fill="currentColor"/></svg>' },
-                    { text: 'Кубки', href: '/t/kubky', icon: '<svg viewBox="0 0 24 24" fill="none"><path d="M6 8 C6 4 18 4 18 8 C18 13 15 16 12 16 C9 16 6 13 6 8 Z" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="21" x2="16" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="9" y="12" width="6" height="2" rx="1" fill="currentColor" opacity="0.3"/></svg>' },
-                    { text: 'Мечі', href: '/t/mechi', icon: '<svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="2" x2="12" y2="16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="6" y1="14" x2="18" y2="14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><polygon points="10,2 12,0 14,2" fill="currentColor"/></svg>' },
-                    { text: 'Пентаклі', href: '/t/pentakli', icon: '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/><polygon points="12,4 14.5,9.5 20,10 16,14 17,19.5 12,17 7,19.5 8,14 4,10 9.5,9.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>' }
+                    { text: 'Аркани', href: '/t/velyki-arkany', icon: icons.arcana },
+                    { text: 'Жезли', href: '/t/zhezly', icon: icons.wand },
+                    { text: 'Кубки', href: '/t/kubky', icon: icons.cup },
+                    { text: 'Мечі', href: '/t/mechi', icon: icons.sword },
+                    { text: 'Пентаклі', href: '/t/pentakli', icon: icons.pentacle }
                 ];
                 
                 links.forEach(function(link) {
@@ -198,7 +206,7 @@ return [
             }
         }
         
-        // ЯК У ПЕРШОМУ КОДІ: для сторінки дискусії
+        // Для сторінки дискусії
         if (cp.indexOf('/d/100') !== -1) {
             var dh = document.querySelector('.DiscussionHero-title');
             if (dh && !document.querySelector('.custom-nav-links')) {
@@ -206,11 +214,11 @@ return [
                 c.className = 'custom-nav-links';
                 
                 var links = [
-                    { text: 'Аркани', href: '/t/velyki-arkany', icon: '<svg viewBox="0 0 24 24" fill="none"><polygon points="12,3 22,21 2,21" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>' },
-                    { text: 'Жезли', href: '/t/zhezly', icon: '<svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="3" x2="12" y2="21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="12" cy="4" r="2.5" fill="currentColor"/></svg>' },
-                    { text: 'Кубки', href: '/t/kubky', icon: '<svg viewBox="0 0 24 24" fill="none"><path d="M6 8 C6 4 18 4 18 8 C18 13 15 16 12 16 C9 16 6 13 6 8 Z" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="21" x2="16" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="9" y="12" width="6" height="2" rx="1" fill="currentColor" opacity="0.3"/></svg>' },
-                    { text: 'Мечі', href: '/t/mechi', icon: '<svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="2" x2="12" y2="16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="6" y1="14" x2="18" y2="14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><polygon points="10,2 12,0 14,2" fill="currentColor"/></svg>' },
-                    { text: 'Пентаклі', href: '/t/pentakli', icon: '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/><polygon points="12,4 14.5,9.5 20,10 16,14 17,19.5 12,17 7,19.5 8,14 4,10 9.5,9.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>' }
+                    { text: 'Аркани', href: '/t/velyki-arkany', icon: icons.arcana },
+                    { text: 'Жезли', href: '/t/zhezly', icon: icons.wand },
+                    { text: 'Кубки', href: '/t/kubky', icon: icons.cup },
+                    { text: 'Мечі', href: '/t/mechi', icon: icons.sword },
+                    { text: 'Пентаклі', href: '/t/pentakli', icon: icons.pentacle }
                 ];
                 
                 links.forEach(function(link) {
@@ -234,10 +242,8 @@ return [
         }
     }
     
-    // ЯК У ПЕРШОМУ КОДІ: викликаємо одразу
     addNav();
     
-    // ЯК У ПЕРШОМУ КОДІ: MutationObserver для відстеження змін
     var observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             if (mutation.type === 'childList') {
@@ -248,7 +254,6 @@ return [
     
     observer.observe(document.body, { childList: true, subtree: true });
     
-    // ЯК У ПЕРШОМУ КОДІ: обробник для внутрішніх посилань
     document.body.addEventListener('click', function(event) {
         if (event.target.classList.contains('internal-link')) {
             event.preventDefault();
@@ -458,124 +463,133 @@ JS;
     }
     
     function addTagsToDrawer() {
-        var drawer = document.querySelector(".App-drawer");
-        if (!drawer || typeof app === "undefined" || !app.store) return;
+    var drawer = document.querySelector(".App-drawer");
+    if (!drawer || typeof app === "undefined" || !app.store) return;
+    
+    var oldSection = drawer.querySelector(".tags-section");
+    if (oldSection) oldSection.remove();
+    
+    var oldCustomSection = drawer.querySelector(".custom-links-section-drawer");
+    if (oldCustomSection) oldCustomSection.remove();
+    
+    try {
+        var allTags = app.store.all("tags");
+        var primaryTags = [];
         
-        var oldSection = drawer.querySelector(".tags-section");
-        if (oldSection) oldSection.remove();
-        
-        var oldCustomSection = drawer.querySelector(".custom-links-section-drawer");
-        if (oldCustomSection) oldCustomSection.remove();
-        
-        try {
-            var allTags = app.store.all("tags");
-            var primaryTags = [];
-            
-            allTags.forEach(function(tag) {
-                var parent = tag.parent();
-                var isPrimary = !parent && tag.position() !== null;
-                if (isPrimary) {
-                    primaryTags.push({
-                        name: tag.name(),
-                        slug: tag.slug(),
-                        color: tag.color() || "#888",
-                        icon: tag.icon() || "fas fa-tag",
-                        position: tag.position() || 0
-                    });
-                }
-            });
-            
-            primaryTags.sort(function(a, b) { return a.position - b.position; });
-            
-            if (primaryTags.length > 0) {
-                var tagsSection = document.createElement("div");
-                tagsSection.className = "tags-section";
-                
-                var title = document.createElement("div");
-                title.className = "tags-section-title";
-                title.textContent = "Категорії";
-                tagsSection.appendChild(title);
-                
-                primaryTags.forEach(function(tag) {
-                    var link = document.createElement("a");
-                    link.className = "drawer-tag-item";
-                    
-                    var icon = document.createElement("i");
-                    icon.className = tag.icon;
-                    icon.style.color = tag.color;
-                    
-                    link.appendChild(icon);
-                    link.appendChild(document.createTextNode(tag.name));
-                    
-                    var url = basePath + "/t/" + encodeURIComponent(tag.slug);
-                    link.addEventListener("click", function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        drawer.classList.remove("open");
-                        document.body.classList.remove("drawerOpen");
-                        if (typeof m !== "undefined" && m.route) {
-                            m.route.set(url);
-                        } else {
-                            window.location.href = url;
-                        }
-                    });
-                    tagsSection.appendChild(link);
+        allTags.forEach(function(tag) {
+            var parent = tag.parent();
+            var isPrimary = !parent && tag.position() !== null;
+            if (isPrimary) {
+                primaryTags.push({
+                    name: tag.name(),
+                    slug: tag.slug(),
+                    color: tag.color() || "#888",
+                    icon: tag.icon() || "fas fa-tag",
+                    position: tag.position() || 0
                 });
-                drawer.appendChild(tagsSection);
             }
+        });
+        
+        primaryTags.sort(function(a, b) { return a.position - b.position; });
+        
+        if (primaryTags.length > 0) {
+            var tagsSection = document.createElement("div");
+            tagsSection.className = "tags-section";
             
-            var activeLinks = customLinks.filter(function(link) {
-                return link.enabled && link.showInDrawer;
-            });
+            var title = document.createElement("div");
+            title.className = "tags-section-title";
+            title.textContent = "Категорії";
+            tagsSection.appendChild(title);
             
-            if (activeLinks.length > 0) {
-                var customSection = document.createElement("div");
-                customSection.className = "custom-links-section-drawer";
+            primaryTags.forEach(function(tag) {
+                var link = document.createElement("a");
+                link.className = "drawer-tag-item";
                 
-                var customTitle = document.createElement("div");
-                customTitle.className = "tags-section-title";
-                customTitle.textContent = "Корисні посилання";
-                customSection.appendChild(customTitle);
+                var icon = document.createElement("i");
+                icon.className = tag.icon;
+                icon.style.color = tag.color;
                 
-                activeLinks.forEach(function(link) {
-                    var linkElement = document.createElement("a");
-                    linkElement.className = "drawer-custom-link";
-                    
-                    if (link.icon) {
-                        var icon = document.createElement("i");
-                        icon.className = link.icon;
-                        if (link.iconColor) {
-                            icon.style.color = link.iconColor;
-                        }
-                        linkElement.appendChild(icon);
+                link.appendChild(icon);
+                link.appendChild(document.createTextNode(tag.name));
+                
+                var url = basePath + "/t/" + encodeURIComponent(tag.slug);
+                link.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    drawer.classList.remove("open");
+                    document.body.classList.remove("drawerOpen");
+                    if (typeof m !== "undefined" && m.route) {
+                        m.route.set(url);
+                    } else {
+                        window.location.href = url;
                     }
-                    
-                    linkElement.appendChild(document.createTextNode(link.title));
-                    
-                    var url = link.url;
-                    if (basePath && url.charAt(0) === "/" && url.indexOf(basePath) !== 0) {
-                        url = basePath + url;
-                    }
-                    
-                    linkElement.addEventListener("click", function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        drawer.classList.remove("open");
-                        document.body.classList.remove("drawerOpen");
-                        if (link.target === "_blank") {
-                            window.open(url, "_blank", "noopener,noreferrer");
-                        } else {
-                            window.location.href = url;
-                        }
-                    });
-                    customSection.appendChild(linkElement);
                 });
-                drawer.appendChild(customSection);
-            }
-        } catch (e) {
-            console.error("Drawer error:", e);
+                tagsSection.appendChild(link);
+            });
+            drawer.appendChild(tagsSection);
         }
+        
+        var activeLinks = customLinks.filter(function(link) {
+            return link.enabled && link.showInDrawer;
+        });
+        
+        if (activeLinks.length > 0) {
+            var customSection = document.createElement("div");
+            customSection.className = "custom-links-section-drawer";
+            
+            var customTitle = document.createElement("div");
+            customTitle.className = "tags-section-title";
+            customTitle.textContent = "Корисні посилання";
+            customSection.appendChild(customTitle);
+            
+            activeLinks.forEach(function(link) {
+                var linkElement = document.createElement("a");
+                linkElement.className = "drawer-custom-link";
+                
+                if (link.icon) {
+                    var icon = document.createElement("i");
+                    icon.className = link.icon;
+                    if (link.iconColor) {
+                        icon.style.color = link.iconColor;
+                    }
+                    linkElement.appendChild(icon);
+                }
+                
+                linkElement.appendChild(document.createTextNode(link.title));
+                
+                var url = link.url;
+                if (basePath && url.charAt(0) === "/" && url.indexOf(basePath) !== 0) {
+                    url = basePath + url;
+                }
+                
+                // ====== КЛЮЧОВА ЗМІНА ======
+                linkElement.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    drawer.classList.remove("open");
+                    document.body.classList.remove("drawerOpen");
+                    
+                    // Перевіряємо тип посилання
+                    if (link.target === "_blank") {
+                        // Зовнішні посилання - відкриваємо в новій вкладці
+                        window.open(url, "_blank", "noopener,noreferrer");
+                    } else if (url.startsWith("/") && typeof m !== "undefined" && m.route) {
+                        // ВНУТРІШНІ ПОСИЛАННЯ - використовуємо Mithril роутер БЕЗ перезавантаження
+                        m.route.set(url);
+                    } else {
+                        // Повні URL (https://...) - переходимо стандартно
+                        window.location.href = url;
+                    }
+                });
+                
+                customSection.appendChild(linkElement);
+            });
+            drawer.appendChild(customSection);
+        }
+    } catch (e) {
+        console.error("Drawer error:", e);
     }
+}
     
     function applySidebarHiding() {
         if (!document.querySelector("#subtags-sidebar-hide")) {
@@ -773,7 +787,7 @@ JS;
 .subtag-item:hover .subtag-label { background-color: var(--tag-bg); box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2); transform: scale(1.05); }
 .subtags-display { animation: subtagsFadeIn 0.3s ease-in; }
 @keyframes subtagsFadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-.custom-links-section { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--control-bg); }
+.custom-links-section { border-radius: 15px; background: var(--control-bg);margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--control-bg); }
 .custom-links-title { font-size: 14px; font-weight: 600; color: #787C7E; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding: 0 8px; }
 .custom-link-item { display: block; padding: 8px; margin: 2px 0; color: var(--discussion-title-color); text-decoration: none; font-size: 14px; border-radius: 4px; transition: background-color 0.15s ease; }
 .custom-link-item:hover { background-color: var(--muted-more-bg); }
