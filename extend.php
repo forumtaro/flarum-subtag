@@ -77,38 +77,77 @@ return [
                             $slug = 'discussion-' . $discussion->id;
                         }
                         
-                        // ====== НОВА ЛОГІКА ======
-                        // Спочатку шукаємо існуючий тег за назвою (name)
-                        $existingTag = Tag::where('name', $title)
+                                               // ====== НОВА ЛОГІКА (ВИДАЛЕННЯ ТЕГУ 3 ТА ЙОГО СУБТЕГІВ) ======
+                        // Перевіряємо, чи вже є прикріплений автотег до дискусії
+                        $existingAutoTag = $discussion->tags()
                             ->where('color', '#8a2be2')
                             ->first();
                         
-                        if ($existingTag) {
-                            // Якщо тег з такою назвою вже існує - просто прикріплюємо його
-                            $discussion->tags()->syncWithoutDetaching([$existingTag->id]);
+                        if ($existingAutoTag) {
+                            // Якщо автотег вже прикріплений - використовуємо його
+                            $newTagId = $existingAutoTag->id;
+                            $isNewTag = false;
                         } else {
-                            // Якщо тегу немає - створюємо новий
-                            // Перевіряємо унікальність slug
-                            $originalSlug = $slug;
-                            $counter = 1;
-                            while (Tag::where('slug', $slug)->exists()) {
-                                $slug = $originalSlug . '-' . $counter;
-                                $counter++;
+                            // Шукаємо існуючий тег за slug (надійніше ніж за name)
+                            $existingTag = Tag::where('slug', $slug)
+                                ->where('color', '#8a2be2')
+                                ->first();
+                            
+                            if ($existingTag) {
+                                // Якщо тег з таким slug вже існує - використовуємо його
+                                $newTagId = $existingTag->id;
+                                $isNewTag = false;
+                            } else {
+                                // Якщо тегу немає - створюємо новий
+                                $originalSlug = $slug;
+                                $counter = 1;
+                                while (Tag::where('slug', $slug)->exists()) {
+                                    $slug = $originalSlug . '-' . $counter;
+                                    $counter++;
+                                }
+                                
+                                $newTag = Tag::firstOrCreate(
+                                    ['slug' => $slug],
+                                    [
+                                        'name'      => $title,
+                                        'color'     => '#8a2be2',
+                                        'is_hidden' => 0,
+                                        'position'  => null,
+                                        'parent_id' => null
+                                    ]
+                                );
+                                
+                                $newTagId = $newTag->id;
+                                $isNewTag = true;
                             }
-                            
-                            $newTag = Tag::firstOrCreate(
-                                ['slug' => $slug],
-                                [
-                                    'name'      => $title,
-                                    'color'     => '#8a2be2',
-                                    'is_hidden' => 0,
-                                    'position'  => null,
-                                    'parent_id' => null
-                                ]
-                            );
-                            
-                            $discussion->tags()->syncWithoutDetaching([$newTag->id]);
                         }
+                        
+                        // Отримуємо ID тегу 3 та всіх його дочірніх тегів
+                        $deckTagId = 3;
+                        $subtagIds = Tag::where('parent_id', $deckTagId)->pluck('id')->toArray();
+                        $tagsToRemove = array_merge([$deckTagId], $subtagIds);
+                        
+                        // Отримуємо поточні теги дискусії
+                        $currentTagIds = $discussion->tags()->pluck('tags.id')->toArray();
+                        
+                        // Якщо тег НОВИЙ - залишаємо тег 3 та його субтеги
+                        // Якщо тег ВЖЕ ІСНУВАВ - видаляємо тег 3 та його субтеги
+                        if ($isNewTag) {
+                            // СИТУАЦІЯ 1: Перше створення тегу - залишаємо всі теги
+                            $filteredTagIds = $currentTagIds;
+                        } else {
+                            // СИТУАЦІЯ 2: Тег вже існує - видаляємо тег 3 та його субтеги
+                            $filteredTagIds = array_diff($currentTagIds, $tagsToRemove);
+                        }
+                        
+                        // Додаємо новий автотег
+                        $filteredTagIds[] = $newTagId;
+                        
+                        // Видаляємо дублікати
+                        $filteredTagIds = array_unique($filteredTagIds);
+                        
+                        // Замінюємо всі теги дискусії
+                        $discussion->tags()->sync($filteredTagIds);
                     });
                 });
                 break;
@@ -252,7 +291,11 @@ return [
         });
     });
     
-    observer.observe(document.body, { childList: true, subtree: true });
+    const targetNode = document.querySelector('.IndexPage-nav') || document.body;
+observer.observe(targetNode, { 
+    childList: true, 
+    subtree: targetNode === document.body // true тільки для body
+});
     
     document.body.addEventListener('click', function(event) {
         if (event.target.classList.contains('internal-link')) {
