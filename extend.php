@@ -291,11 +291,7 @@ return [
         });
     });
     
-    const targetNode = document.querySelector('.IndexPage-nav') || document.body;
-observer.observe(targetNode, { 
-    childList: true, 
-    subtree: targetNode === document.body // true тільки для body
-});
+    observer.observe(document.body, { childList: true, subtree: true });
     
     document.body.addEventListener('click', function(event) {
         if (event.target.classList.contains('internal-link')) {
